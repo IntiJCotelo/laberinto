@@ -16,26 +16,24 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 })
 
+app.get("/crear-laberinto", (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'crear-laberinto.html'));
+})
+
 
 app.post("/crear-laberinto", (req, res) => {
     let cantidadNiveles = 0
 
     fs.readdirSync("./laberintos").forEach((archivo) => {
         cantidadNiveles++
-    });
+    });    
 
     let laberinto = req.body
     let laberintoJSON = JSON.stringify(laberinto)
 
     fs.writeFileSync(`./laberintos/laberinto-${cantidadNiveles + 1}.json`, laberintoJSON)
     res.send(console.log("Laberinto creado correctamente"))
-})
-
-
-app.get("/crear-laberinto", (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'crear-laberinto.html'));
-})
-
+})    
 
 app.get("/ver-laberintos", (req, res) => {
     let contenidoArchivos = []

@@ -5,6 +5,18 @@ let juego = {
     nivelesJuego: [],
 }
 
+
+async function cargarNiveles() {
+    const respuesta = await fetch("http://localhost:3000/ver-laberintos")
+    const nivelesFetch = await respuesta.json()
+    
+    const niveles = nivelesFetch.map((nivel) => {
+        return JSON.parse(nivel) 
+    } )
+
+    juego.nivelesJuego = niveles
+}
+
 cargarNiveles()
 
 let matriz = [
@@ -22,7 +34,7 @@ let matriz = [
 
 // RESPALDO DE LA MATRIZ PARA PODER REINICIAR EL NIVEL
 function copiarMatriz(arr) {
-    const copia = []
+    const copia = []                               //Por ahora queda sin utilizarse en el juego
     
     for (const fila of arr) {
         const copiaFila = fila.slice()
@@ -78,26 +90,29 @@ function reiniciar() {
 }
 // CARGAR/RECARGAR DISPLAY
 
-// LÓGICA MOVIMIENTOS
-function moverArriba() {
-    let fila
-    let columna
-    for(let i = 0; i < matriz.length; i++) {
-        for(let j = 0; j < matriz[i].length; j++) {
-            if(matriz[i][j] === 2) {
-                fila = i
-                columna = j
-            }       
+function retornarPosicionJugador() {
+    for (let i = 0; i < matriz.length; i++) {
+      for (let j = 0; j < matriz[i].length; j++) {
+        if (matriz[i][j] === 2) {
+          return [i, j];
         }
+      }
     }
+}
+
+
+// LÓGICA MOVIMIENTOS
+
+function moverArriba() {
+    let posicionJugador = retornarPosicionJugador()
     
-    if (matriz[fila - 1][columna] === 0) {
-        matriz[fila][columna] = 0
-        matriz[fila - 1][columna] = 2
+    if (matriz[posicionJugador[0] - 1][posicionJugador[1]] === 0) {
+        matriz[posicionJugador[0]][posicionJugador[1]] = 0
+        matriz[posicionJugador[0] - 1][posicionJugador[1]] = 2
         cargarLaberinto()
-    } else if (matriz[fila - 1][columna] === 3) {
-        matriz[fila][columna] = 0
-        matriz[fila - 1][columna] = 2
+    } else if (matriz[posicionJugador[0] - 1][posicionJugador[1]] === 3) {
+        matriz[posicionJugador[0]][posicionJugador[1]] = 0
+        matriz[posicionJugador[0] - 1][posicionJugador[1]] = 2
         alert("¡GANASTE!")
         juego.nivelActual++
         matriz = juego.nivelesJuego[juego.nivelActual - 1]
@@ -106,24 +121,15 @@ function moverArriba() {
 }
 
 function moverAbajo() {
-    let fila
-    let columna
-    for(let i = 0; i < matriz.length; i++) {
-        for(let j = 0; j < matriz[i].length; j++) {
-            if(matriz[i][j] === 2) {
-                fila = i
-                columna = j
-            }       
-        }
-    }
+    let posicionJugador = retornarPosicionJugador()
     
-    if (matriz[fila + 1][columna] === 0) {
-        matriz[fila][columna] = 0
-        matriz[fila + 1][columna] = 2
+    if (matriz[posicionJugador[0] + 1][posicionJugador[1]] === 0) {
+        matriz[posicionJugador[0]][posicionJugador[1]] = 0
+        matriz[posicionJugador[0] + 1][posicionJugador[1]] = 2
         cargarLaberinto()
-    } else if (matriz[fila + 1][columna] === 3) {
-        matriz[fila][columna] = 0
-        matriz[fila + 1][columna] = 2
+    } else if (matriz[posicionJugador[0] + 1][posicionJugador[1]] === 3) {
+        matriz[posicionJugador[0]][posicionJugador[1]] = 0
+        matriz[posicionJugador[0] + 1][posicionJugador[1]] = 2
         alert("¡GANASTE!")
         juego.nivelActual++
         matriz = juego.nivelesJuego[juego.nivelActual - 1]
@@ -132,24 +138,15 @@ function moverAbajo() {
 }
 
 function moverIzquierda() {
-    let fila
-    let columna
-    for(let i = 0; i < matriz.length; i++) {
-        for(let j = 0; j < matriz[i].length; j++) {
-            if(matriz[i][j] === 2) {
-                fila = i
-                columna = j
-            }       
-        }
-    }
-    
-    if (matriz[fila][columna - 1] === 0) {
-        matriz[fila][columna] = 0
-        matriz[fila][columna - 1] = 2
+    let posicionJugador = retornarPosicionJugador() 
+
+    if (matriz[posicionJugador[0]][posicionJugador[1] - 1] === 0) {
+        matriz[posicionJugador[0]][posicionJugador[1]] = 0
+        matriz[posicionJugador[0]][posicionJugador[1] - 1] = 2
         cargarLaberinto()
-    } else if (matriz[fila][columna - 1] === 3) {
-        matriz[fila][columna] = 0
-        matriz[fila][columna - 1] = 2
+    } else if (matriz[posicionJugador[0]][posicionJugador[1] - 1] === 3) {
+        matriz[posicionJugador[0]][posicionJugador[1]] = 0
+        matriz[posicionJugador[0]][posicionJugador[1] - 1] = 2
         alert("¡GANASTE!")
         juego.nivelActual++
         matriz = juego.nivelesJuego[juego.nivelActual - 1]
@@ -158,24 +155,15 @@ function moverIzquierda() {
 }
 
 function moverDerecha() {
-    let fila
-    let columna
-    for(let i = 0; i < matriz.length; i++) {
-        for(let j = 0; j < matriz[i].length; j++) {
-            if(matriz[i][j] === 2) {
-                fila = i
-                columna = j
-            }       
-        }
-    }
+    let posicionJugador = retornarPosicionJugador()
     
-    if (matriz[fila][columna + 1] === 0) {
-        matriz[fila][columna] = 0
-        matriz[fila][columna + 1] = 2
+    if (matriz[posicionJugador[0]][posicionJugador[1] + 1] === 0) {
+        matriz[posicionJugador[0]][posicionJugador[1]] = 0
+        matriz[posicionJugador[0]][posicionJugador[1] + 1] = 2
         cargarLaberinto()
-    } else if (matriz[fila][columna + 1] === 3) {
-        matriz[fila][columna] = 0
-        matriz[fila][columna + 1] = 2
+    } else if (matriz[posicionJugador[0]][posicionJugador[1] + 1] === 3) {
+        matriz[posicionJugador[0]][posicionJugador[1]] = 0
+        matriz[posicionJugador[0]][posicionJugador[1] + 1] = 2
         alert("¡GANASTE!")
         juego.nivelActual++
         matriz = juego.nivelesJuego[juego.nivelActual - 1]
@@ -202,14 +190,3 @@ function main() {
 }
 
 main()        
-
-async function cargarNiveles() {
-    const respuesta = await fetch("http://localhost:3000/ver-laberintos")
-    const nivelesFetch = await respuesta.json()
-    
-    const niveles = nivelesFetch.map((nivel) => {
-        return JSON.parse(nivel) 
-    } )
-
-    juego.nivelesJuego = niveles
-}
